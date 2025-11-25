@@ -9,16 +9,23 @@ const StoryList = () => {
       try {
         const res = await API.get("/stories");
         setStories(res.data);
-        console.log(stories);
       } catch (err) {
         console.error("Error fetching stories:", err);
       }
     };
     fetchStories();
-  }, [stories]);
+  }, []);
 
   return (
-    <div style={{ display: "flex", gap: 20, flexWrap: "wrap", padding: 20 }}>
+    <main
+      style={{
+        display: "flex",
+        gap: 20,
+        flexWrap: "wrap",
+        padding: "20px",
+        background: "red",
+      }}
+    >
       {stories.map((story) => (
         <div
           key={story._id}
@@ -40,7 +47,7 @@ const StoryList = () => {
           </p>
         </div>
       ))}
-    </div>
+    </main>
   );
 };
 
