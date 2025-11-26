@@ -1,6 +1,7 @@
 import { useEffect, useContext, useRef, useState } from "react";
 import StoryContext from "../contexts/StoryContext";
 import API from "../api";
+import socket from "../lib/socket";
 
 const StoryList = ({ currentUserId }) => {
   // const [stories, setStories] = useState([]);
@@ -58,6 +59,26 @@ const StoryList = ({ currentUserId }) => {
       console.error("Failed to delete story:", err);
     }
   };
+
+  useEffect(() => {
+    socket.on("storyDeleted", (storyId) => {
+      console.log("Story removed in real-time:", storyId);
+      setStories((prev) => prev.filter((story) => story._id !== storyId)); // listening for delete story & deleting in real time
+    });
+
+    socket.on("storyAdded", (story) => {
+      console.log("Story added in real-time:", story);
+      setStories((prev) => {
+        if (prev.some((s) => s._id === story._id)) return prev; // skip duplicates
+        return [story, ...prev];
+      }); // listening for new story & updating in real time
+    });
+
+    return () => {
+      socket.off("storyDeleted");
+      socket.off("storyAdded");
+    };
+  }, [setStories]);
 
   return (
     <div style={{ padding: 20 }}>
