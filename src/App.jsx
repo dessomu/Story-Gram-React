@@ -1,16 +1,26 @@
-import StoryUploader from "./components/StoryUploader";
-import StoryList from "./components/StoryList";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-function App() {
-  const userId = "673fd72f16a55e410f0e4d88"; // Example userId
-
+export default function App() {
   return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>📸 Story Upload Demo</h1>
-      <StoryUploader userId={userId} />
-      <StoryList />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Protected */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;

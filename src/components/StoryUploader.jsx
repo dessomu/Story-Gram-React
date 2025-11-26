@@ -17,7 +17,7 @@ const StoryUploader = ({ userId }) => {
 
   // Upload to backend
   const handleUpload = async () => {
-    if (!file) return alert("Please select an image first!");
+    if (!file) return alert("Please select an image/video first!");
 
     try {
       setLoading(true);
