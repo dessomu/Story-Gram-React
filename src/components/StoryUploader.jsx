@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import API from "../api";
+import StoryContext from "../contexts/StoryContext";
 
 const StoryUploader = ({ userId }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const { setStories } = useContext(StoryContext);
 
   // When user selects image
   const handleFileChange = (e) => {
@@ -36,8 +39,8 @@ const StoryUploader = ({ userId }) => {
       // Step 2: save the story in MongoDB
       const storyRes = await API.post("/stories", { userId, imageURL });
 
-      console.log("✅ Story saved:", storyRes.data);
-      alert("Story uploaded successfully!");
+      console.log("✅ Story saved:", storyRes.data.stories);
+      setStories(storyRes.data.stories);
       setFile(null);
       setPreview("");
     } catch (error) {

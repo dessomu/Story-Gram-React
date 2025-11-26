@@ -1,54 +1,128 @@
-import { useEffect, useState } from "react";
+import { useEffect, useContext, useRef, useState } from "react";
+import StoryContext from "../contexts/StoryContext";
 import API from "../api";
 
-const StoryList = () => {
-  const [stories, setStories] = useState([]);
+const StoryList = ({ currentUserId }) => {
+  // const [stories, setStories] = useState([]);
+  const { stories, setStories } = useContext(StoryContext);
 
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const loaderRef = useRef(null);
+
+  // Call loadStories when page changes
   useEffect(() => {
-    const fetchStories = async () => {
+    const loadStories = async () => {
       try {
-        const res = await API.get("/stories");
-        setStories(res.data);
+        const res = await API.get(`/stories?page=${page}`);
+
+        setStories((prev) => {
+          const combined = [...prev, ...res.data.stories];
+          const unique = Array.from(
+            new Map(combined.map((item) => [item._id, item])).values()
+          );
+          return unique;
+        });
+        setHasMore(res.data.hasMore);
       } catch (err) {
         console.error("Error fetching stories:", err);
       }
     };
-    fetchStories();
-  }, []);
+    loadStories();
+  }, [page, setStories]);
+
+  // Intersection Observer to detect bottom of list
+  useEffect(() => {
+    if (!hasMore) return; // stop observing when no more content
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setPage((prev) => prev + 1);
+        observer.disconnect();
+      }
+    });
+
+    if (loaderRef.current) observer.observe(loaderRef.current);
+
+    return () => observer.disconnect();
+  }, [hasMore]);
+
+  // delete story
+  const handleDelete = async (storyId) => {
+    if (!window.confirm("Delete this story?")) return;
+
+    try {
+      await API.delete(`/stories/${storyId}`);
+      setStories((prev) => prev.filter((story) => story._id !== storyId));
+    } catch (err) {
+      console.error("Failed to delete story:", err);
+    }
+  };
 
   return (
-    <main
-      style={{
-        display: "flex",
-        gap: 20,
-        flexWrap: "wrap",
-        padding: "20px",
-        background: "red",
-      }}
-    >
-      {stories.map((story) => (
-        <div
-          key={story._id}
-          style={{
-            width: 200,
-            border: "1px solid #ccc",
-            borderRadius: 10,
-            padding: 10,
-            textAlign: "center",
-          }}
-        >
-          <img
-            src={story.imageURL}
-            alt="story"
-            style={{ width: "100%", borderRadius: 8 }}
-          />
-          <p style={{ fontSize: 14, marginTop: 5 }}>
-            {story.userId?.name || "Unknown User"}
-          </p>
+    <div style={{ padding: 20 }}>
+      <h2>Stories Feed</h2>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {stories.map((story) => (
+          <div
+            key={story._id}
+            style={{
+              position: "relative",
+              display: "inline-block",
+              marginBottom: "20px",
+            }}
+            className="story-card"
+          >
+            <img
+              src={story.imageURL}
+              width={120}
+              style={{ borderRadius: 10 }}
+            />
+
+            {story.userId?._id === currentUserId && (
+              <button
+                onClick={() => handleDelete(story._id)}
+                style={deleteButtonStyle}
+                className="delete-btn"
+              >
+                🗑️
+              </button>
+            )}
+
+            <p style={{ marginTop: 6 }}>
+              <strong>{story.userId?.name}</strong>
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {hasMore && (
+        <div ref={loaderRef} style={{ textAlign: "center", padding: 20 }}>
+          <p>Loading more stories...</p>
         </div>
-      ))}
-    </main>
+      )}
+    </div>
   );
+};
+
+const deleteButtonStyle = {
+  position: "absolute",
+  top: 6,
+  right: 6,
+  background: "rgba(0,0,0,0.7)",
+  color: "#fff",
+  border: "none",
+  borderRadius: "50%",
+  width: 26,
+  height: 26,
+  cursor: "pointer",
+  fontSize: 14,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  opacity: 0,
+  transition: "opacity 0.3s ease",
 };
 
 export default StoryList;
