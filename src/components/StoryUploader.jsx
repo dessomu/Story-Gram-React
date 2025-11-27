@@ -1,6 +1,9 @@
 import { useState, useContext } from "react";
 import API from "../api";
 import StoryContext from "../contexts/StoryContext";
+import "./compStyles/StoryUploader.css";
+import vidUpload from "../assets/vid-upload.png";
+import picUpload from "../assets/pic-upload.png";
 
 const StoryUploader = ({ userId }) => {
   const [file, setFile] = useState(null);
@@ -52,44 +55,49 @@ const StoryUploader = ({ userId }) => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: 400,
-        margin: "2rem auto",
-        padding: 20,
-        border: "1px solid #ccc",
-        borderRadius: 10,
-      }}
-    >
-      <h3>Upload a Story</h3>
+    <div className="su-card">
+      <div className="su-top">
+        <div className="su-input-fake">
+          <p>Share your story...</p>
+        </div>
+      </div>
 
-      <input type="file" accept="image/*" onChange={handleFileChange} />
+      <div className="su-divider"></div>
+
+      <div className="su-actions">
+        <label className="su-action-btn">
+          <img src={picUpload} alt="photo" />
+          <span>Photo</span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            hidden
+          />
+        </label>
+
+        <label className="su-action-btn">
+          <img src={vidUpload} alt="video" />
+          <span>Video</span>
+          <input type="file" accept="video/*" hidden />
+        </label>
+      </div>
 
       {preview && (
-        <div style={{ marginTop: 20 }}>
-          <img
-            src={preview}
-            alt="preview"
-            style={{ width: "100%", borderRadius: 8 }}
-          />
+        <div className="su-preview">
+          <img src={preview} alt="preview" />
         </div>
       )}
 
-      <button
-        style={{
-          marginTop: 20,
-          padding: "10px 20px",
-          borderRadius: 6,
-          background: "#007bff",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-        }}
-        onClick={handleUpload}
-        disabled={loading}
-      >
-        {loading ? "Uploading..." : "Upload Story"}
-      </button>
+      {preview && (
+        <button
+          className="su-upload-btn"
+          onClick={handleUpload}
+          disabled={loading}
+        >
+          {loading ? "Uploading..." : "Upload Story"}
+        </button>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../api";
 import { useNavigate } from "react-router-dom";
+import "./styles/Signup.css";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -11,7 +12,6 @@ export default function Signup() {
     e.preventDefault();
     try {
       await API.post("/auth/signup", form);
-      alert("Signup successful!");
       navigate("/login");
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
@@ -19,42 +19,41 @@ export default function Signup() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Signup</h2>
+    <div className="signup-container">
+      <div className="signup-card">
+        <h2 className="signup-title">Create Account</h2>
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
+        <form onSubmit={handleSubmit} className="signup-form">
+          <input
+            type="text"
+            placeholder="Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
+          <input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
 
-        <button type="submit">Signup</button>
-      </form>
+          <button type="submit" className="signup-btn">
+            Sign Up
+          </button>
+        </form>
 
-      <p onClick={() => navigate("/login")} style={{ cursor: "pointer" }}>
-        Already have an account? Login
-      </p>
+        <p className="signup-redirect" onClick={() => navigate("/login")}>
+          Already have an account? <span>Login</span>
+        </p>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: { width: 300, margin: "50px auto", textAlign: "center" },
-  form: { display: "flex", flexDirection: "column", gap: 10 },
-};

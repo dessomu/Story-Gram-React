@@ -2,6 +2,7 @@ import { useEffect, useContext, useRef, useState } from "react";
 import StoryContext from "../contexts/StoryContext";
 import API from "../api";
 import socket from "../lib/socket";
+import "./compStyles/StoryList.css";
 
 const StoryList = ({ currentUserId }) => {
   // const [stories, setStories] = useState([]);
@@ -50,8 +51,6 @@ const StoryList = ({ currentUserId }) => {
 
   // delete story
   const handleDelete = async (storyId) => {
-    if (!window.confirm("Delete this story?")) return;
-
     try {
       await API.delete(`/stories/${storyId}`);
       setStories((prev) => prev.filter((story) => story._id !== storyId));
@@ -62,12 +61,10 @@ const StoryList = ({ currentUserId }) => {
 
   useEffect(() => {
     socket.on("storyDeleted", (storyId) => {
-      console.log("Story removed in real-time:", storyId);
       setStories((prev) => prev.filter((story) => story._id !== storyId)); // listening for delete story & deleting in real time
     });
 
     socket.on("storyAdded", (story) => {
-      console.log("Story added in real-time:", story);
       setStories((prev) => {
         if (prev.some((s) => s._id === story._id)) return prev; // skip duplicates
         return [story, ...prev];
@@ -81,37 +78,24 @@ const StoryList = ({ currentUserId }) => {
   }, [setStories]);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Stories Feed</h2>
+    <div className="storylist-container">
+      <h2 className="storylist-title">Stories Feed</h2>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div className="storylist-grid">
         {stories.map((story) => (
-          <div
-            key={story._id}
-            style={{
-              position: "relative",
-              display: "inline-block",
-              marginBottom: "20px",
-            }}
-            className="story-card"
-          >
-            <img
-              src={story.imageURL}
-              width={120}
-              style={{ borderRadius: 10 }}
-            />
+          <div key={story._id} className="story-card">
+            <img src={story.imageURL} alt="story" className="story-image" />
 
             {story.userId?._id === currentUserId && (
               <button
+                className="story-delete-btn"
                 onClick={() => handleDelete(story._id)}
-                style={deleteButtonStyle}
-                className="delete-btn"
               >
                 🗑️
               </button>
             )}
 
-            <p style={{ marginTop: 6 }}>
+            <p className="story-author">
               <strong>{story.userId?.name}</strong>
             </p>
           </div>
@@ -119,31 +103,12 @@ const StoryList = ({ currentUserId }) => {
       </div>
 
       {hasMore && (
-        <div ref={loaderRef} style={{ textAlign: "center", padding: 20 }}>
+        <div ref={loaderRef} className="storylist-loader">
           <p>Loading more stories...</p>
         </div>
       )}
     </div>
   );
-};
-
-const deleteButtonStyle = {
-  position: "absolute",
-  top: 6,
-  right: 6,
-  background: "rgba(0,0,0,0.7)",
-  color: "#fff",
-  border: "none",
-  borderRadius: "50%",
-  width: 26,
-  height: 26,
-  cursor: "pointer",
-  fontSize: 14,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  opacity: 0,
-  transition: "opacity 0.3s ease",
 };
 
 export default StoryList;

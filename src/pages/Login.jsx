@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../api";
 import { useNavigate } from "react-router-dom";
+import "./styles/Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,12 +11,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await API.post("/auth/login", form);
-
       localStorage.setItem("token", res.data.token);
-      console.log(res.data.token);
-
-      alert("Login successful!");
-
       navigate("/");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -23,35 +19,34 @@ export default function Login() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Login</h2>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Welcome Back</h2>
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
+        <form onSubmit={handleSubmit} className="login-form">
+          <input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <button type="submit" className="login-btn">
+            Login
+          </button>
+        </form>
 
-      <p onClick={() => navigate("/signup")} style={{ cursor: "pointer" }}>
-        Don't have an account? Signup
-      </p>
+        <p className="login-redirect" onClick={() => navigate("/signup")}>
+          Don’t have an account? <span>Signup</span>
+        </p>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: { width: 300, margin: "50px auto", textAlign: "center" },
-  form: { display: "flex", flexDirection: "column", gap: 10 },
-};

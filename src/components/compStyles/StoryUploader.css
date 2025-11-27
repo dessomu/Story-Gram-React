@@ -1,0 +1,167 @@
+.su-card {
+  width: 100%;
+  max-width: 550px;
+  margin: 2rem auto;
+  background: white;
+  border-radius: 18px;
+  padding: 16px 20px;
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.3s ease;
+}
+
+/* Top input bar (Fake input like Facebook) */
+.su-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.su-input-fake {
+  flex: 1;
+  background: #f5f5f7;
+  padding: 8px 10px;
+  border-radius: 15px;
+  border: 1px solid #d2d2d7;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.su-input-fake:hover {
+  background: #ededf0;
+}
+
+.su-input-fake p {
+  color: #6e6e73;
+  font-size: 15px;
+}
+
+/* Divider line */
+.su-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 12px 0;
+}
+
+/* Action buttons (Photo / Video) */
+.su-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 4px;
+}
+
+.su-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 12px;
+  border-radius: 10px;
+
+  cursor: pointer;
+  background: #f8f8fa;
+  transition: background 0.25s ease;
+}
+
+.su-action-btn:hover {
+  background: #ececf2;
+}
+
+.su-action-btn img {
+  width: 22px;
+  height: 22px;
+}
+
+.su-action-btn span {
+  font-size: 14px;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+/* Preview section */
+.su-preview {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.su-preview img {
+  width: 50%;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Upload button */
+.su-upload-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px;
+
+  border: none;
+  border-radius: 12px;
+  background: #0071e3;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.su-upload-btn:hover {
+  background: #0a84ff;
+}
+
+.su-upload-btn:active {
+  transform: scale(0.97);
+}
+
+.su-upload-btn:disabled {
+  background: #9ac7f7;
+  cursor: not-allowed;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================
+   📱 RESPONSIVE BREAKPOINTS
+   ======================== */
+
+@media (max-width: 768px) {
+  .su-card {
+    padding: 14px;
+  }
+  .su-action-btn span {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .su-card {
+    padding: 12px;
+    border-radius: 14px;
+  }
+  .su-actions {
+    gap: 10px;
+  }
+  .su-action-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px;
+  }
+  .su-input-fake p {
+    font-size: 14px;
+  }
+}

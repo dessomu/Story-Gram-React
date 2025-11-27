@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import "./compStyles/Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -9,20 +10,14 @@ export default function Navbar() {
   };
 
   return (
-    <div style={styles.nav}>
-      <h3 style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
-        Stories
+    <nav className="navbar">
+      <h3 className="navbar-title" onClick={() => navigate("/")}>
+        StoryGram
       </h3>
-      <button onClick={logout}>Logout</button>
-    </div>
+
+      <button className="navbar-logout-btn" onClick={logout}>
+        Logout
+      </button>
+    </nav>
   );
 }
-
-const styles = {
-  nav: {
-    padding: 15,
-    background: "#eee",
-    display: "flex",
-    justifyContent: "space-between",
-  },
-};
