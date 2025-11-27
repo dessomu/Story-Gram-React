@@ -79,12 +79,16 @@ const StoryList = ({ currentUserId }) => {
 
   return (
     <div className="storylist-container">
-      <h2 className="storylist-title">Stories Feed</h2>
+      <div className="storylist-title">Stories Feed</div>
 
       <div className="storylist-grid">
         {stories.map((story) => (
           <div key={story._id} className="story-card">
-            <img src={story.imageURL} alt="story" className="story-image" />
+            {story.mediaType === "video" ? (
+              <video src={story.mediaURL} controls className="story-video" />
+            ) : (
+              <img src={story.mediaURL} alt="story" className="story-image" />
+            )}
 
             {story.userId?._id === currentUserId && (
               <button

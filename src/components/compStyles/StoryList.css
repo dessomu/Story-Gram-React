@@ -2,24 +2,34 @@
   padding: 24px;
   max-width: 1000px;
   margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .storylist-title {
-  font-size: 26px;
+  width: 50%;
+  font-size: 1.2rem;
+  text-align: center;
   font-weight: 600;
+  padding: 10px;
   color: #1d1d1f;
   margin-bottom: 20px;
 }
 
-/* Grid layout */
+/* Story feed container */
 .storylist-grid {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 24px;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
-/* Individual card */
+/* Individual story card in center */
 .story-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
   background: white;
   border-radius: 16px;
   padding: 14px;
@@ -29,16 +39,17 @@
   transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.story-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-}
-
-/* Story image */
-.story-image {
+/* Story media */
+.story-image,
+.story-video {
   width: 100%;
   border-radius: 12px;
   object-fit: cover;
+}
+
+.story-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* Author text */
@@ -46,6 +57,9 @@
   margin-top: 10px;
   font-size: 15px;
   color: #1d1d1f;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background-color: #e8e8eb;
 }
 
 /* Delete button floating */
@@ -113,11 +127,8 @@
 
 /* 768px */
 @media (max-width: 768px) {
-  .storylist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-  }
   .story-card {
+    width: 80%;
     padding: 12px;
   }
   .storylist-title {
@@ -127,12 +138,8 @@
 
 /* 480px */
 @media (max-width: 480px) {
-  .storylist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 18px;
-  }
-
   .story-card {
+    max-width: 100%;
     padding: 10px;
     border-radius: 12px;
   }

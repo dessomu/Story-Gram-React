@@ -1,7 +1,7 @@
 .su-card {
   width: 100%;
   max-width: 550px;
-  margin: 2rem auto;
+  margin: 0 auto;
   background: white;
   border-radius: 18px;
   padding: 16px 20px;
@@ -91,6 +91,11 @@
   border-radius: 12px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
+.su-preview video {
+  width: 50%;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
 
 /* Upload button */
 .su-upload-btn {
@@ -141,6 +146,7 @@
 
 @media (max-width: 768px) {
   .su-card {
+    width: 85%;
     padding: 14px;
   }
   .su-action-btn span {
@@ -150,8 +156,10 @@
 
 @media (max-width: 480px) {
   .su-card {
+    width: 80%;
     padding: 12px;
     border-radius: 14px;
+    margin: 10px 18px;
   }
   .su-actions {
     gap: 10px;
@@ -159,9 +167,15 @@
   .su-action-btn {
     flex: 1;
     justify-content: center;
-    padding: 8px;
+    padding: 5px;
+    border-radius: 10px;
+  }
+  .su-input-fake {
+    padding: 5px 8px;
+    border-radius: 10px;
   }
   .su-input-fake p {
     font-size: 14px;
+    margin: 5px;
   }
 }

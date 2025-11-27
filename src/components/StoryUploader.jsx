@@ -8,6 +8,7 @@ import picUpload from "../assets/pic-upload.png";
 const StoryUploader = ({ userId }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
+  const [fileType, setFileType] = useState(""); // NEW
   const [loading, setLoading] = useState(false);
 
   const { setStories } = useContext(StoryContext);
@@ -15,10 +16,14 @@ const StoryUploader = ({ userId }) => {
   // When user selects image
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
+    if (!selected) return;
+
+    console.log("File selected:", selected);
+    console.log("Type:", selected.type);
+
     setFile(selected);
-    if (selected) {
-      setPreview(URL.createObjectURL(selected));
-    }
+    setFileType(selected.type.startsWith("video") ? "video" : "image"); // NEW
+    setPreview(URL.createObjectURL(selected));
   };
 
   // Upload to backend
@@ -30,22 +35,27 @@ const StoryUploader = ({ userId }) => {
 
       // Step 1: upload image to backend (Cloudinary)
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("media", file);
 
       const uploadRes = await API.post("/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const imageURL = uploadRes.data.url;
-      console.log(imageURL, userId);
+      const mediaURL = uploadRes.data.url;
+      console.log(mediaURL);
 
       // Step 2: save the story in MongoDB
-      const storyRes = await API.post("/stories", { userId, imageURL });
+      const storyRes = await API.post("/stories", {
+        userId,
+        mediaURL,
+        mediaType: fileType,
+      });
 
       console.log("✅ Story saved:", storyRes.data.stories);
       setStories(storyRes.data.stories);
       setFile(null);
       setPreview("");
+      setFileType("");
     } catch (error) {
       console.error(error);
       alert("Upload failed!");
@@ -79,13 +89,22 @@ const StoryUploader = ({ userId }) => {
         <label className="su-action-btn">
           <img src={vidUpload} alt="video" />
           <span>Video</span>
-          <input type="file" accept="video/*" hidden />
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleFileChange}
+            hidden
+          />
         </label>
       </div>
 
       {preview && (
         <div className="su-preview">
-          <img src={preview} alt="preview" />
+          {fileType === "video" ? (
+            <video src={preview} controls />
+          ) : (
+            <img src={preview} alt="preview" />
+          )}
         </div>
       )}
 
