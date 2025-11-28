@@ -1,0 +1,60 @@
+/* theme.css — include before component styles */
+:root {
+  /* spacing / base */
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --muted: #6e6e73;
+  --text: #1d1d1f;
+  --primary: #0071e3;
+  --border: rgba(0, 0, 0, 0.06);
+  --glass: rgba(255, 255, 255, 0.65);
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+
+  /* accents for hover/active */
+  --hover-bg: #ececf2;
+  --danger: #ff4d4f;
+}
+
+/* Dark theme overrides — applied when [data-theme="dark"] on <html> or <body> */
+[data-theme="dark"] {
+  --bg: #0f0f11; /* app background */
+  --card: #111214; /* cards */
+  --muted: #9aa1a6;
+  --text: #e6e7e8;
+  --primary: #3897f0; /* instagram-like blue */
+  --border: rgba(255, 255, 255, 0.06);
+  --glass: rgba(18, 18, 19, 0.5);
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+
+  --hover-bg: rgba(255, 255, 255, 0.03);
+  --danger: #ff6b6b;
+}
+
+/* Respect user system preference automatically for first visit */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* if the page has no explicit data-theme, default to dark */
+    color-scheme: dark;
+    --bg: #0f0f11;
+    --card: #111214;
+    --muted: #9aa1a6;
+    --text: #e6e7e8;
+    --primary: #3897f0;
+    --border: rgba(255, 255, 255, 0.06);
+    --glass: rgba(18, 18, 19, 0.5);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    --hover-bg: rgba(255, 255, 255, 0.03);
+    --danger: #ff6b6b;
+  }
+}
+
+/* Small helper utilities */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    Roboto, sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

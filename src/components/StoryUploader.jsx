@@ -11,6 +11,8 @@ const StoryUploader = ({ userId }) => {
   const [fileType, setFileType] = useState(""); // NEW
   const [loading, setLoading] = useState(false);
 
+  const [progress, setProgress] = useState(0);
+
   const { setStories } = useContext(StoryContext);
 
   // When user selects image
@@ -32,33 +34,34 @@ const StoryUploader = ({ userId }) => {
 
     try {
       setLoading(true);
+      setProgress(0);
 
-      // Step 1: upload image to backend (Cloudinary)
       const formData = new FormData();
       formData.append("media", file);
 
       const uploadRes = await API.post("/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (e) => {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          console.log("progress", percent);
+          setProgress(percent);
+        },
       });
 
       const mediaURL = uploadRes.data.url;
-      console.log(mediaURL);
 
-      // Step 2: save the story in MongoDB
       const storyRes = await API.post("/stories", {
         userId,
         mediaURL,
         mediaType: fileType,
       });
 
-      console.log("✅ Story saved:", storyRes.data.stories);
       setStories(storyRes.data.stories);
+      setProgress(100);
       setFile(null);
       setPreview("");
-      setFileType("");
     } catch (error) {
       console.error(error);
-      alert("Upload failed!");
     } finally {
       setLoading(false);
     }
@@ -104,6 +107,14 @@ const StoryUploader = ({ userId }) => {
             <video src={preview} controls />
           ) : (
             <img src={preview} alt="preview" />
+          )}
+          {progress > 0 && (
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
           )}
         </div>
       )}

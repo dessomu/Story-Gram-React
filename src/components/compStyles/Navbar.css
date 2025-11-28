@@ -1,29 +1,26 @@
-/* Sticky frosted navbar */
+/* Pure dark Instagram-style navbar */
 .navbar {
   width: 100%;
-  box-sizing: border-box; /* ✅ Fix overflow */
+  box-sizing: border-box;
   position: sticky;
   top: 0;
+  z-index: 100;
 
-  backdrop-filter: blur(14px) saturate(180%);
-  background: rgba(255, 255, 255, 0.65);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: #000; /* dark black like Instagram */
+  border-bottom: 1px solid #1a1a1a;
 
-  padding: 12px 20px; /* reduced for better fit */
+  padding: 12px 20px;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  z-index: 100;
-  overflow: hidden; /* ensures nothing spills */
 }
 
 /* Title */
 .navbar-title {
   font-size: 20px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: #fff; /* Instagram uses pure white text */
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
@@ -38,29 +35,30 @@
   font-size: 14px;
   font-weight: 500;
 
-  background: #0071e3;
-  color: white;
+  background: #262626; /* IG dark gray button */
+  color: #fff;
 
-  border: none;
-  border-radius: 10px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+
   cursor: pointer;
 
-  transition: background 0.25s ease, transform 0.2s ease;
+  transition: background 0.25s ease, border 0.25s ease;
 }
 
 .navbar-logout-btn:hover {
-  background: #0a84ff;
+  background: #333; /* subtle highlight */
+  border-color: #525252;
 }
 
 .navbar-logout-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 /* ===============================
       📱 RESPONSIVE BREAKPOINTS
-     =============================== */
+   =============================== */
 
-/* 1024px */
 @media (max-width: 1024px) {
   .navbar {
     padding: 12px 20px;
@@ -70,7 +68,6 @@
   }
 }
 
-/* 768px */
 @media (max-width: 768px) {
   .navbar-title {
     font-size: 18px;
@@ -81,10 +78,9 @@
   }
 }
 
-/* 480px */
 @media (max-width: 480px) {
   .navbar {
-    padding: 10px 14px; /* fits all small screens perfectly */
+    padding: 10px 14px;
   }
 
   .navbar-title {
@@ -92,7 +88,7 @@
   }
 
   .navbar-logout-btn {
-    padding: 6px 10px;
+    padding: 6px 12px;
     font-size: 12.5px;
   }
 }
