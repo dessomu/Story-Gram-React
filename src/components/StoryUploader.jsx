@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import API from "../api";
 import StoryContext from "../contexts/StoryContext";
 import "./compStyles/StoryUploader.css";
@@ -12,8 +12,6 @@ const StoryUploader = ({ userId }) => {
   const [loading, setLoading] = useState(false);
 
   const [progress, setProgress] = useState(0);
-
-  const { setStories } = useContext(StoryContext);
 
   // When user selects image
   const handleFileChange = (e) => {
@@ -43,25 +41,26 @@ const StoryUploader = ({ userId }) => {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (e) => {
           const percent = Math.round((e.loaded / e.total) * 100);
-          console.log("progress", percent);
           setProgress(percent);
         },
       });
 
       const mediaURL = uploadRes.data.url;
 
-      const storyRes = await API.post("/stories", {
+      // Only create story—socket will update UI automatically
+      await API.post("/stories", {
         userId,
         mediaURL,
         mediaType: fileType,
       });
 
-      setStories(storyRes.data.stories);
       setProgress(100);
       setFile(null);
       setPreview("");
+      // setComment("");
     } catch (error) {
-      console.error(error);
+      console.error("Upload error:", error);
+      alert("Upload failed");
     } finally {
       setLoading(false);
     }

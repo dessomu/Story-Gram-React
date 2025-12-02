@@ -39,6 +39,28 @@ const StoryList = ({ currentUserId }) => {
     loadStories();
   }, [page, setStories]);
 
+  useEffect(() => {
+    if (!expandedStoryId) return; // only run when user opens comments panel
+
+    const loadComments = async () => {
+      try {
+        const res = await API.get(`/comments/${expandedStoryId._id}/comments`);
+
+        setStories((prev) =>
+          prev.map((s) =>
+            s._id === expandedStoryId._id
+              ? { ...s, comments: res.data.comments }
+              : s
+          )
+        );
+      } catch (error) {
+        console.error("Failed to load comments:", error);
+      }
+    };
+
+    loadComments();
+  }, [expandedStoryId, setStories]);
+
   // Intersection Observer to detect bottom of list
   useEffect(() => {
     if (!hasMore) return; // stop observing when no more content
@@ -67,86 +89,89 @@ const StoryList = ({ currentUserId }) => {
 
   const handleLike = async (storyId) => {
     try {
-      const res = await API.patch(`/stories/${storyId}/like`);
-
-      setStories((prev) =>
-        prev.map((s) =>
-          s._id === storyId ? { ...s, likes: res.data.likes } : s
-        )
-      );
+      await API.patch(`/likes/${storyId}/like`);
+      // UI will update automatically via socket listener below
     } catch (err) {
-      console.error(err);
+      console.error("Failed to like:", err);
     }
   };
 
   const handleComment = async (storyId) => {
-    const res = await API.post(`/stories/${storyId}/comment`, {
-      text: comment,
-    });
+    if (!comment.trim()) return;
 
-    setStories((prev) =>
-      prev.map((s) =>
-        s._id === storyId ? { ...s, comments: res.data.comments } : s
-      )
-    );
-    console.log(stories);
-
-    setComment("");
+    try {
+      await API.post(`/comments/${storyId}/comment`, { text: comment });
+      // real-time update received via socket
+      setComment("");
+    } catch (err) {
+      console.error("Failed to comment:", err);
+    }
   };
 
   const handleDeleteComment = async (storyId, commentId) => {
+    if (!window.confirm("Delete this comment?")) return;
+
     try {
-      await API.delete(`/stories/${storyId}/comment/${commentId}`);
-      // socket will update UI
+      await API.delete(`/comments/${storyId}/comment/${commentId}`);
+      // socket will update UI for everyone
     } catch (err) {
       console.error("Failed to delete comment:", err);
     }
   };
 
   useEffect(() => {
-    const handleCommentAdded = ({ storyId, comments }) => {
+    const handleCommentAdded = ({ storyId, comment }) => {
       setStories((prev) =>
-        prev.map((s) => (s._id === storyId ? { ...s, comments } : s))
+        prev.map((s) =>
+          s._id === storyId
+            ? {
+                ...s,
+                comments: [...(s.comments || []), comment],
+                commentCount: (s.commentCount || 0) + 1,
+              }
+            : s
+        )
       );
     };
 
-    const handleLikeUpdated = ({ storyId, likes }) => {
+    const handleLikeUpdated = ({ storyId, likeCount }) =>
       setStories((prev) =>
-        prev.map((s) => (s._id === storyId ? { ...s, likes } : s))
+        prev.map((s) => (s._id === storyId ? { ...s, likeCount } : s))
       );
-    };
 
-    const handleStoryDeleted = (storyId) => {
-      setStories((prev) => prev.filter((story) => story._id !== storyId));
-    };
-
-    const handleStoryAdded = (story) => {
-      setStories((prev) => {
-        if (prev.some((s) => s._id === story._id)) return prev; // avoid duplicates
-        return [story, ...prev];
-      });
-    };
-
-    const handleCommentDelete = ({ storyId, comments }) => {
+    const handleCommentDeleted = ({ storyId, commentId }) =>
       setStories((prev) =>
-        prev.map((s) => (s._id === storyId ? { ...s, comments } : s))
+        prev.map((s) =>
+          s._id === storyId
+            ? {
+                ...s,
+                comments: s.comments?.filter((c) => c._id !== commentId) || [],
+                commentCount: s.commentCount - 1,
+              }
+            : s
+        )
       );
-    };
 
-    // Register listeners
+    const handleStoryDeleted = (storyId) =>
+      setStories((prev) => prev.filter((s) => s._id !== storyId));
+
+    const handleStoryAdded = (story) =>
+      setStories((prev) =>
+        prev.some((s) => s._id === story._id) ? prev : [story, ...prev]
+      );
+
     socket.on("commentAdded", handleCommentAdded);
     socket.on("likeUpdated", handleLikeUpdated);
+    socket.on("commentDeleted", handleCommentDeleted);
     socket.on("storyDeleted", handleStoryDeleted);
     socket.on("storyAdded", handleStoryAdded);
-    socket.on("commentDeleted", handleCommentDelete);
 
-    // Cleanup listeners on unmount
     return () => {
       socket.off("commentAdded", handleCommentAdded);
       socket.off("likeUpdated", handleLikeUpdated);
+      socket.off("commentDeleted", handleCommentDeleted);
       socket.off("storyDeleted", handleStoryDeleted);
       socket.off("storyAdded", handleStoryAdded);
-      socket.off("commentDeleted", handleCommentDelete);
     };
   }, [setStories]);
 
@@ -194,13 +219,13 @@ const StoryList = ({ currentUserId }) => {
                 onClick={() => handleLike(story._id)}
                 className="action-icon"
               >
-                ❤️ {story.likes?.length}
+                ❤️ {story.likeCount}
               </span>
               <span
                 onClick={() => toggleComments(story._id)}
                 className="action-icon"
               >
-                💬 {story.comments?.length}
+                💬 {story.commentCount}
               </span>
               <span
                 onClick={() => setShareStory(story)}
