@@ -10,12 +10,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar">
-      <h3 className="navbar-title" onClick={() => navigate("/")}>
+    <nav className="nav-bar">
+      <h3 className="nav-logo" onClick={() => navigate("/")}>
         StoryGram
       </h3>
 
-      <button className="navbar-logout-btn" onClick={logout}>
+      <button className="nav-logout" onClick={logout}>
         Logout
       </button>
     </nav>

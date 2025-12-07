@@ -19,16 +19,17 @@ export default function Signup() {
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-card">
-        <h2 className="signup-title">Create Account</h2>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-title">Create Account</h2>
 
-        <form onSubmit={handleSubmit} className="signup-form">
+        <form onSubmit={handleSubmit} className="auth-form">
           <input
             type="text"
             placeholder="Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="auth-input"
           />
 
           <input
@@ -36,6 +37,7 @@ export default function Signup() {
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className="auth-input"
           />
 
           <input
@@ -43,14 +45,15 @@ export default function Signup() {
             placeholder="Password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            className="auth-input"
           />
 
-          <button type="submit" className="signup-btn">
+          <button type="submit" className="auth-btn">
             Sign Up
           </button>
         </form>
 
-        <p className="signup-redirect" onClick={() => navigate("/login")}>
+        <p className="auth-redirect" onClick={() => navigate("/login")}>
           Already have an account? <span>Login</span>
         </p>
       </div>

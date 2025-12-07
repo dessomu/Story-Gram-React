@@ -19,16 +19,17 @@ export default function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2 className="login-title">Welcome Back</h2>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-title">Welcome Back</h2>
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="auth-form">
           <input
             type="email"
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className="auth-input"
           />
 
           <input
@@ -36,14 +37,15 @@ export default function Login() {
             placeholder="Password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            className="auth-input"
           />
 
-          <button type="submit" className="login-btn">
+          <button type="submit" className="auth-btn">
             Login
           </button>
         </form>
 
-        <p className="login-redirect" onClick={() => navigate("/signup")}>
+        <p className="auth-redirect" onClick={() => navigate("/signup")}>
           Don’t have an account? <span>Signup</span>
         </p>
       </div>
