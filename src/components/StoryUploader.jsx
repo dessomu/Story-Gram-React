@@ -1,6 +1,5 @@
 import { useState } from "react";
 import API from "../api";
-import StoryContext from "../contexts/StoryContext";
 import "./compStyles/StoryUploader.css";
 import vidUpload from "../assets/vid-upload.png";
 import picUpload from "../assets/pic-upload.png";
@@ -46,12 +45,14 @@ const StoryUploader = ({ userId }) => {
       });
 
       const mediaURL = uploadRes.data.url;
+      const publicId = uploadRes.data.publicId;
 
       // Only create story—socket will update UI automatically
       await API.post("/stories", {
         userId,
         mediaURL,
         mediaType: fileType,
+        mediaPublicId: publicId,
       });
 
       setProgress(100);
@@ -78,7 +79,7 @@ const StoryUploader = ({ userId }) => {
 
       <div className="su-actions">
         <label className="su-action-btn">
-          <img src={picUpload} alt="photo" />
+          <img id="upload-photo-icon" src={picUpload} alt="photo" />
           <span>Photo</span>
           <input
             type="file"
@@ -89,7 +90,7 @@ const StoryUploader = ({ userId }) => {
         </label>
 
         <label className="su-action-btn">
-          <img src={vidUpload} alt="video" />
+          <img id="upload-video-icon" src={vidUpload} alt="video" />
           <span>Video</span>
           <input
             type="file"

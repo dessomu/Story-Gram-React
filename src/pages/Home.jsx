@@ -8,11 +8,17 @@ export default function Home() {
   const token = localStorage.getItem("token");
   const user = jwtDecode(token);
   return (
-    <div className="home-wrapper">
+    <div className="home-container">
       <Navbar />
+
       <div className="home-content">
-        <StoryUploader userId={user.id} />
-        <StoryList currentUserId={user.id} />
+        <div className="story-actions">
+          <StoryUploader userId={user.id} />
+        </div>
+
+        <div className="story-list-section">
+          <StoryList currentUserId={user.id} />
+        </div>
       </div>
     </div>
   );

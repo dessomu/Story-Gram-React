@@ -3,8 +3,7 @@
 .su-card {
   width: 100%;
   max-width: 600px;
-  margin: 20px auto;
-  background: #121212; /* Dark IG-style card */
+  background: var(--card); /* Dark IG-style card */
   border-radius: 14px;
   padding: 16px;
   border: 1px solid #1f1f1f;
@@ -80,7 +79,7 @@
 }
 
 .su-action-btn span {
-  font-size: 13.5px;
+  font-size: 0.9rem !important;
   color: #e5e5e5;
   font-weight: 500;
 }
@@ -286,20 +285,27 @@
 
 @media (max-width: 480px) {
   .su-card {
-    width: 80%;
-    padding: 12px;
+    width: 100%;
+    padding: 10px 14px;
     border-radius: 12px;
-    margin: 16px auto;
+    margin: -10px auto 0;
   }
   .su-action-btn {
-    padding: 8px;
+    padding: 5px;
     border-radius: 8px;
   }
+  .su-action-btn span {
+    font-size: 0.7rem !important;
+  }
+  .su-action-btn img {
+    width: 15px;
+    height: 15px;
+  }
   .su-input-fake {
-    padding: 8px 10px;
+    padding: 5px 10px;
     border-radius: 16px;
   }
   .su-input-fake p {
-    font-size: 14px;
+    font-size: 12px;
   }
 }

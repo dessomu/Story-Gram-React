@@ -49,12 +49,13 @@
 }
 
 /* Small helper utilities */
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
-    Roboto, sans-serif;
+* {
+  padding: 0;
   margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+/* Story Uploader card */
+.story-upload-card {
+  width: 100%; /* let it fill feed, not full screen */
 }

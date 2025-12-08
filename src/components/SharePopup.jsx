@@ -28,50 +28,39 @@ export default function SharePopup({ mediaURL, onClose }) {
   return (
     <div className="share-overlay" onClick={onClose}>
       <div className="share-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close-btn" onClick={onClose}>
+        <button className="share-close-btn" onClick={onClose}>
           ✕
         </button>
 
         <h3 className="share-title">Share Story</h3>
 
         <div className="share-options">
-          <button className="share-item" onClick={handleCopy}>
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src={link}
-              alt="CopyLink"
-            />{" "}
-            Copy Link
+          <button className="share-option" onClick={handleCopy}>
+            <img src={link} alt="copylink" />
+            <span>Copy Link</span>
           </button>
 
           <a
-            className="share-item"
+            className="share-option"
             href={`https://wa.me/?text=${encodeURIComponent(mediaURL)}`}
             target="_blank"
           >
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src={whatsApp}
-              alt="WhatsApp"
-            />{" "}
-            WhatsApp
+            <img src={whatsApp} alt="whatsapp" />
+            <span>WhatsApp</span>
           </a>
 
           <a
-            className="share-item"
+            className="share-option"
             href={`https://t.me/share/url?url=${encodeURIComponent(mediaURL)}`}
             target="_blank"
           >
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src={teleGram}
-              alt="Telegram"
-            />{" "}
-            Telegram
+            <img src={teleGram} alt="telegram" />
+            <span>Telegram</span>
           </a>
 
-          <button className="share-item" onClick={handleSystemShare}>
-            📤 System Share
+          <button className="share-option" onClick={handleSystemShare}>
+            <span>📤</span>
+            <span>System Share</span>
           </button>
         </div>
       </div>

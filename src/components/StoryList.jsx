@@ -4,6 +4,10 @@ import API from "../api";
 import socket from "../lib/socket";
 import "./compStyles/StoryList.css";
 import SharePopup from "./SharePopup";
+import mute from "../assets/mute.png";
+import unmute from "../assets/unmute.png";
+import like from "../assets/like.png";
+import chat from "../assets/bubble-chat.png";
 
 const StoryList = ({ currentUserId }) => {
   // const [stories, setStories] = useState([]);
@@ -15,8 +19,13 @@ const StoryList = ({ currentUserId }) => {
 
   const [comment, setComment] = useState("");
   const [expandedStoryId, setExpandedStoryId] = useState(null);
-
   const [shareStory, setShareStory] = useState(null);
+
+  const [playingStoryId, setPlayingStoryId] = useState(null);
+  const [isMuted, setIsMuted] = useState(false);
+
+  const videoRefs = useRef({}); // Store references to all video elements
+  const observerRef = useRef(null);
 
   // Call loadStories when page changes
   useEffect(() => {
@@ -44,7 +53,7 @@ const StoryList = ({ currentUserId }) => {
 
     const loadComments = async () => {
       try {
-        const res = await API.get(`/comments/${expandedStoryId._id}/comments`);
+        const res = await API.get(`/comments/${expandedStoryId}/comments`);
 
         setStories((prev) =>
           prev.map((s) =>
@@ -76,6 +85,70 @@ const StoryList = ({ currentUserId }) => {
 
     return () => observer.disconnect();
   }, [hasMore]);
+
+  // 1. Setup Intersection Observer
+  useEffect(() => {
+    const options = {
+      root: null, // viewport
+      rootMargin: "0px",
+      threshold: 0.6, // Video must be 60% visible to start playing
+    };
+
+    const handleIntersection = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const storyId = entry.target.getAttribute("data-id");
+          setPlayingStoryId(storyId);
+        }
+      });
+    };
+
+    observerRef.current = new IntersectionObserver(handleIntersection, options);
+
+    // Observe all video elements currently in the DOM
+    const videoElements = Object.values(videoRefs.current);
+    videoElements.forEach((el) => {
+      if (el) observerRef.current.observe(el);
+    });
+
+    return () => {
+      if (observerRef.current) observerRef.current.disconnect();
+    };
+  }, [stories]);
+
+  // 2. Handle Play/Pause Logic based on playingStoryId
+  useEffect(() => {
+    Object.keys(videoRefs.current).forEach((key) => {
+      const videoEl = videoRefs.current[key];
+      if (!videoEl) return;
+
+      if (key === playingStoryId) {
+        // This is the video in view
+        const playPromise = videoEl.play();
+
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            // Auto-play was prevented.
+            // This usually happens if user hasn't interacted with document yet.
+            console.log("Autoplay blocked:", error);
+            // Optional: Force mute if audio autoplay is blocked
+            // setIsMuted(true);
+            // videoEl.muted = true;
+            // videoEl.play();
+          });
+        }
+      } else {
+        // Not in view, pause and reset
+        videoEl.pause();
+        videoEl.currentTime = 0; // Optional: Reset video to start
+      }
+    });
+  }, [playingStoryId]);
+
+  // Toggle Global Mute
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
 
   // delete story
   const handleDelete = async (storyId) => {
@@ -109,10 +182,9 @@ const StoryList = ({ currentUserId }) => {
   };
 
   const handleDeleteComment = async (storyId, commentId) => {
-    if (!window.confirm("Delete this comment?")) return;
-
     try {
       await API.delete(`/comments/${storyId}/comment/${commentId}`);
+      setExpandedStoryId(null);
       // socket will update UI for everyone
     } catch (err) {
       console.error("Failed to delete comment:", err);
@@ -208,7 +280,28 @@ const StoryList = ({ currentUserId }) => {
 
             {/* Media */}
             {story.mediaType === "video" ? (
-              <video src={story.mediaURL} controls className="story-media" />
+              <>
+                <video
+                  ref={(el) => (videoRefs.current[story._id] = el)}
+                  data-id={story._id}
+                  src={story.mediaURL}
+                  className="story-media"
+                  // Vital attributes for mobile/autoplay
+                  playsInline
+                  webkit-playsinline="true"
+                  loop
+                  muted={isMuted}
+                  preload="metadata"
+                  onClick={toggleMute} // Tap video to mute/unmute
+                />
+                <div className="mute-indicator" onClick={toggleMute}>
+                  {isMuted ? (
+                    <img src={mute} alt="mute" />
+                  ) : (
+                    <img src={unmute} alt="mute" />
+                  )}
+                </div>
+              </>
             ) : (
               <img src={story.mediaURL} alt="story" className="story-media" />
             )}
@@ -219,18 +312,30 @@ const StoryList = ({ currentUserId }) => {
                 onClick={() => handleLike(story._id)}
                 className="action-icon"
               >
-                ❤️ {story.likeCount}
+                <img className="story-action-icon like" src={like} alt="like" />{" "}
+                <p>{story.likeCount}</p>
               </span>
               <span
                 onClick={() => toggleComments(story._id)}
                 className="action-icon"
               >
-                💬 {story.commentCount}
+                <img
+                  className="story-action-icon comment"
+                  src={chat}
+                  alt="comment"
+                />{" "}
+                <p>{story.commentCount}</p>
               </span>
               <span
                 onClick={() => setShareStory(story)}
                 className="action-icon"
               >
+                <img
+                  id="share-icon"
+                  className="story-action-icon"
+                  src={chat}
+                  alt="comment"
+                />
                 ↗
               </span>
             </div>
@@ -247,9 +352,10 @@ const StoryList = ({ currentUserId }) => {
                 </div>
 
                 <div className="comments-list">
-                  {story.comments?.length === 0 && (
-                    <p className="no-comments">No comments yet.</p>
-                  )}
+                  {!story.comments ||
+                    (story.comments?.length === 0 && (
+                      <p className="no-comments">No comments yet.</p>
+                    ))}
 
                   {story.comments?.map((c) => (
                     <div key={c._id} className="comment-row">

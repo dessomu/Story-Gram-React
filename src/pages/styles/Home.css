@@ -1,16 +1,20 @@
-.home-wrapper {
+.home-container {
   width: 100%;
   min-height: 100vh;
-  background: #000; /* PURE instagram dark */
-  color: #fff; /* default text color */
+  background: #272727;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .home-content {
-  max-width: 600px; /* IG feed width (perfect) */
-  margin: auto;
-  padding: 24px 16px;
+  width: 100%;
+  max-width: 650px; /* tighten feed width */
+  padding: 0 16px; /* prevent edge overflow */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
-
 /* Optional title (you commented it out but kept styles aligned) */
 .home-title {
   text-align: center;
@@ -37,6 +41,7 @@
 @media (max-width: 480px) {
   .home-content {
     padding: 16px 10px;
+    gap: 0;
   }
   .home-title {
     font-size: 20px;

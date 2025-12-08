@@ -1,46 +1,87 @@
-/* Centered dark overlay */
+/* Overlay */
 .share-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 10, 10, 0.75);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 400;
-  animation: fadeIn 0.2s ease;
+  z-index: 200;
 }
 
-/* Fade animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Center modal */
+/* Popup */
 .share-modal {
-  width: 100%;
-  max-width: 360px;
-  background: #121212;
-  border-radius: 16px;
-  border: 1px solid #1f1f1f;
-  padding: 24px;
+  background: #323232;
+  border-radius: 18px;
+  padding: 24px 26px;
+  width: 360px;
   position: relative;
-  animation: scaleIn 0.25s ease;
+  animation: popupFade 0.25s ease;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.45);
 }
 
-/* Scale animation */
-@keyframes scaleIn {
+/* Close button */
+.share-close-btn {
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Title */
+.share-title {
+  color: #b7622c;
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+/* Options container */
+.share-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Option button/link */
+.share-option {
+  background: #5f605b;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.25s ease;
+  text-decoration: none;
+}
+
+.share-option:hover {
+  background: #5e3123;
+}
+
+.share-option img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Animation */
+@keyframes popupFade {
   from {
     opacity: 0;
-    transform: scale(0.92);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
@@ -48,66 +89,20 @@
   }
 }
 
-/* Close button */
-.modal-close-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  color: #ccc;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.modal-close-btn:hover {
-  color: #fff;
-}
-
-/* Title */
-.share-title {
-  color: #fff;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 18px;
-  text-align: center;
-}
-
-/* Options list */
-.share-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Each share item */
-.share-item {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 10px;
-  padding: 10px 14px;
-  text-align: center;
-  color: #fff;
-  font-size: 15px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s ease, border-color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.share-item:hover {
-  background: #222;
-  border-color: #333;
-}
-
-/* Mobile responsiveness */
+/* Responsive */
 @media (max-width: 480px) {
   .share-modal {
-    max-width: 90%;
-    padding: 20px;
+    width: 90%;
+    padding: 18px 20px;
+    border-radius: 14px;
+  }
+
+  .share-title {
+    font-size: 20px;
+  }
+
+  .share-option {
+    font-size: 15px;
+    padding: 12px;
   }
 }

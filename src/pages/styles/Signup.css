@@ -1,136 +1,182 @@
-/* Background Full Page */
-.auth-container {
+/* Root layout */
+.signup-container {
+  width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to bottom right, #323232, #20100e);
+  background: #272727;
   padding: 20px;
 }
 
 /* Card */
-.auth-card {
-  background: #5f605b;
-  width: 380px;
-  padding: 40px 30px;
-  border-radius: 14px;
-  box-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
-  text-align: center;
+.signup-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--card);
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.4s ease;
 }
 
 /* Title */
-.auth-title {
-  color: #b7622c;
-  font-size: 28px;
-  margin-bottom: 25px;
+.signup-title {
+  font-size: 26px;
   font-weight: 600;
+  color: var(--muted);
+
+  text-align: center;
+  margin-bottom: 24px;
 }
 
-/* Form */
-.auth-form {
+/* Form layout */
+.signup-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 14px;
 }
 
-/* Inputs */
-.auth-input {
-  padding: 13px 14px;
-  background: #323232;
-  border: none;
-  outline: none;
-  border-radius: 10px;
-  color: #fff;
+.signup-form input {
+  padding: 12px 14px;
   font-size: 15px;
+  border: 1px solid #d2d2d7;
+  border-radius: 12px;
+  background: var(--glass);
+  transition: 0.25s ease;
+  color: var(--muted);
 }
 
-.auth-input::placeholder {
-  color: #aaa;
+.signup-form input:focus {
+  outline: none;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
 }
 
 /* Button */
-.auth-btn {
-  background: #923b1b;
+.signup-btn {
+  margin-top: 6px;
+  padding: 12px;
   border: none;
-  padding: 14px 0;
-  color: #fff;
-  font-size: 17px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.auth-btn:hover {
-  background: #b7622c;
-}
-
-/* Redirect */
-.auth-redirect {
-  margin-top: 20px;
-  color: #fff;
-  font-size: 14px;
-}
-
-.auth-redirect span {
-  color: #b7622c;
-  cursor: pointer;
+  border-radius: 12px;
+  font-size: 16px;
   font-weight: 600;
+  background: #0071e3;
+  color: white;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease;
 }
 
-/*   RESPONSIVENESS BREAKS  */
+.signup-btn:hover {
+  background: #0a84ff;
+}
 
-/* 1024px - Small laptop/tablet landscape */
+.signup-btn:active {
+  transform: scale(0.97);
+}
+
+/* Redirect text */
+.signup-redirect {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #6e6e73;
+  cursor: pointer;
+}
+
+.signup-redirect span {
+  color: #0071e3;
+  font-weight: 500;
+}
+
+.signup-redirect:hover span {
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 1024px and below — Tablets & small laptops */
 @media (max-width: 1024px) {
-  .auth-card {
-    width: 420px;
-    padding: 35px 28px;
+  .signup-card {
+    max-width: 420px;
+    padding: 30px;
   }
-  .auth-title {
-    font-size: 26px;
-  }
-}
 
-/* 768px - Tablets portrait */
-@media (max-width: 768px) {
-  .auth-card {
-    width: 360px;
-    padding: 32px 25px;
-  }
-  .auth-title {
+  .signup-title {
     font-size: 24px;
   }
-  .auth-btn {
-    font-size: 16px;
+
+  .signup-form input {
+    font-size: 15px;
+    padding: 12px;
   }
 }
 
-/* 480px - Mobile */
-@media (max-width: 480px) {
-  .auth-container {
-    padding: 12px;
+/* 768px and below — iPads & large phones */
+@media (max-width: 768px) {
+  .signup-container {
+    padding: 16px;
   }
 
-  .auth-card {
-    width: 100%;
-    padding: 28px 18px;
+  .signup-card {
+    max-width: 360px;
+    padding: 26px;
   }
 
-  .auth-title {
+  .signup-title {
     font-size: 22px;
   }
 
-  .auth-input {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  .auth-btn {
-    padding: 12px;
+  .signup-btn {
     font-size: 15px;
-    border-radius: 8px;
+  }
+}
+
+/* 480px and below — Mobile phones */
+@media (max-width: 480px) {
+  .signup-container {
+    padding: 12px;
   }
 
-  .auth-redirect {
+  .signup-card {
+    max-width: 100%;
+    padding: 22px;
+    border-radius: 14px;
+  }
+
+  .signup-title {
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+
+  .signup-form {
+    gap: 12px;
+  }
+
+  .signup-form input {
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .signup-btn {
+    padding: 10px;
+    font-size: 14.5px;
+    border-radius: 10px;
+  }
+
+  .signup-redirect {
     font-size: 13px;
   }
 }
