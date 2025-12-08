@@ -39,6 +39,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: sans-serif;
 }
 
 .story-header-left {
@@ -48,8 +49,8 @@
 }
 
 .story-avatar {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: #222;
   border-radius: 50%;
   color: #fff;
@@ -64,6 +65,12 @@
   color: #fff;
   font-size: 15px;
   font-weight: 600;
+}
+.story-posted-at {
+  font-size: smaller;
+  font-weight: 100;
+  color: #8c8c8c;
+  margin-top: 3px;
 }
 
 /* Delete button */
@@ -81,13 +88,14 @@
   transition: opacity 0.2s ease;
 }
 
-.story-card:hover .story-delete-btn {
+.story-card:hover .story-delete-btn,
+.hovered .story-card .story-delete-btn {
   opacity: 1;
   background-color: #272727;
 }
 .story-delete-btn:hover {
   color: antiquewhite;
-  background-color: darkred !important;
+  background-color: #b7622c !important;
 }
 
 .story-media {
@@ -98,13 +106,23 @@
 }
 .mute-indicator {
   position: absolute;
-  bottom: 50px;
-  right: 20px;
-  z-index: 10;
-  cursor: pointer;
-  background: rgba(0, 0, 0, 0.5);
+  top: 4rem;
+  right: 0.9rem;
   border-radius: 50%;
-  padding: 5px;
+  padding: 8px;
+  z-index: 10;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+}
+.story-card:hover .mute-indicator,
+.hovered .story-card .mute-indicator {
+  opacity: 1;
+}
+.mute-indicator:hover {
+  background: rgba(0, 0, 0, 0.5);
 }
 .mute-indicator img {
   width: 20px;
@@ -122,29 +140,42 @@
 .story-actions span {
   display: flex;
   align-items: center;
-  font-size: 20px;
-  font-weight: 200;
+  justify-content: center;
+  gap: 5px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .story-action-icon {
+  width: 18px;
+  height: 18px;
+  filter: invert(100%);
+}
+.comment {
   width: 20px;
   height: 20px;
-  filter: invert(100%);
 }
 
 .action-icon {
   cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: all 3s ease, opacity 0.15s ease;
+  padding-bottom: 3px;
 }
 
 .action-icon:hover {
   opacity: 0.7;
-  transform: scale(1.1);
+  border-bottom: 1px #999 solid;
+}
+#share-icon {
+  width: 22px;
+}
+.story-action-text {
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 /* caption */
 .story-caption {
+  font-family: Arial, Helvetica, sans-serif;
   padding: 0 14px 20px;
   color: #dfdfdf;
   font-size: 14px;
@@ -191,7 +222,7 @@
   margin-bottom: 12px;
 }
 
-.comments-header h4 {
+.comments-header p {
   color: #fff;
   font-size: 16px;
   font-weight: 600;
@@ -207,11 +238,18 @@
   background-color: #2a2a2a;
   border-radius: 5px;
   padding: 5px 8px;
-  border: none;
 }
 
 .comments-close-btn:hover {
   color: #fff;
+}
+#comment-post-btn {
+  padding: 5px 10px;
+  background: #3897f0;
+  color: #fff;
+}
+#comment-input {
+  padding: 5px 10px;
 }
 
 /* Comment list */
@@ -231,7 +269,7 @@
 }
 
 .delete-comment-btn:hover {
-  color: red;
+  color: #b7622c;
 }
 
 /* No comments message */
@@ -303,6 +341,79 @@
 .comments-input button:hover {
   background: #4aa0ff;
 }
+
+/* Likes container popup */
+.likes-panel {
+  padding: 0 20px;
+  border-radius: 14px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  color: #999;
+  margin: 12px 0;
+  animation: fadeInLikes 0.25s ease;
+}
+
+/* Title */
+.likes-panel p {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: #3897f0;
+}
+
+/* Row each liker */
+.like-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px;
+  border-radius: 12px;
+}
+
+/* Avatar style */
+.like-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #6e95ba;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+/* Close button */
+.likes-panel button {
+  align-self: center;
+  padding: 5px 8px;
+  margin-right: 5px;
+  background: #272727;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.likes-panel button:hover {
+  background: #b7622c;
+}
+
+/* Animation */
+@keyframes fadeInLikes {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* media queries */
 @media (max-width: 768px) {
   .story-card {
@@ -341,5 +452,32 @@
 
   .storylist-title {
     font-size: 1.1rem;
+  }
+  .likes-container {
+    padding: 14px 14px;
+    border-radius: 12px;
+  }
+
+  .like-row {
+    padding: 3px;
+  }
+
+  .like-avatar {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+  }
+  .likes-panel button {
+    font-size: small;
+  }
+  .story-action-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+  #share-icon {
+    width: 17px;
+  }
+  .story-action-text {
+    font-size: small;
   }
 }

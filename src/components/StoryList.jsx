@@ -8,6 +8,8 @@ import mute from "../assets/mute.png";
 import unmute from "../assets/unmute.png";
 import like from "../assets/like.png";
 import chat from "../assets/bubble-chat.png";
+import share from "../assets/share.png";
+import formatDateTime from "../lib/formatDateTime";
 
 const StoryList = ({ currentUserId }) => {
   // const [stories, setStories] = useState([]);
@@ -21,11 +23,15 @@ const StoryList = ({ currentUserId }) => {
   const [expandedStoryId, setExpandedStoryId] = useState(null);
   const [shareStory, setShareStory] = useState(null);
 
+  const [expandedLikeStoryId, setExpandedLikeStoryId] = useState(null); // similar to expandedStoryId comments section
+
   const [playingStoryId, setPlayingStoryId] = useState(null);
   const [isMuted, setIsMuted] = useState(false);
 
   const videoRefs = useRef({}); // Store references to all video elements
   const observerRef = useRef(null);
+
+  const [isHover, setIsHover] = useState(false);
 
   // Call loadStories when page changes
   useEffect(() => {
@@ -48,6 +54,30 @@ const StoryList = ({ currentUserId }) => {
     loadStories();
   }, [page, setStories]);
 
+  // load likes effect
+  useEffect(() => {
+    if (!expandedLikeStoryId) return;
+
+    const loadLikes = async () => {
+      try {
+        const res = await API.get(`/likes/${expandedLikeStoryId}/likes`);
+
+        setStories((prev) =>
+          prev.map((s) =>
+            s._id === expandedLikeStoryId
+              ? { ...s, likeUsers: res.data.likes }
+              : s
+          )
+        );
+      } catch (err) {
+        console.error("Failed to load likes:", err);
+      }
+    };
+
+    loadLikes();
+  }, [expandedLikeStoryId, setStories]);
+
+  // load comment effect
   useEffect(() => {
     if (!expandedStoryId) return; // only run when user opens comments panel
 
@@ -249,7 +279,21 @@ const StoryList = ({ currentUserId }) => {
 
   const toggleComments = (storyId) => {
     setExpandedStoryId((prev) => (prev === storyId ? null : storyId));
+    setExpandedLikeStoryId(null);
     console.log(stories);
+  };
+  const toggleLikes = (storyId) => {
+    setExpandedLikeStoryId((prev) => (prev === storyId ? null : storyId));
+    setExpandedStoryId(null);
+    console.log(stories);
+  };
+
+  const handleTouchStart = () => {
+    setIsHover(true);
+  };
+
+  const handleTouchEnd = () => {
+    setIsHover(false);
   };
 
   return (
@@ -258,14 +302,25 @@ const StoryList = ({ currentUserId }) => {
 
       <div className="storylist-grid">
         {stories.map((story) => (
-          <div key={story._id} className="story-card">
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchEnd}
+            key={story._id}
+            className={isHover ? "hovered story-card " : "story-card"}
+          >
             {/* Top bar */}
             <div className="story-header">
               <div className="story-header-left">
                 <div className="story-avatar">
                   {story.userId?.name?.charAt(0).toUpperCase()}
                 </div>
-                <span className="story-username">{story.userId?.name}</span>
+                <span className="story-username">
+                  {story.userId?.name}{" "}
+                  <p className="story-posted-at">
+                    {formatDateTime(story.createdAt)}
+                  </p>
+                </span>
               </div>
 
               {story.userId?._id === currentUserId && (
@@ -308,13 +363,22 @@ const StoryList = ({ currentUserId }) => {
 
             {/* Action Bar */}
             <div className="story-actions">
-              <span
-                onClick={() => handleLike(story._id)}
-                className="action-icon"
-              >
-                <img className="story-action-icon like" src={like} alt="like" />{" "}
-                <p>{story.likeCount}</p>
+              <span className="action-icon">
+                <img
+                  onClick={() => handleLike(story._id)}
+                  className="story-action-icon like"
+                  src={like}
+                  alt="like"
+                />{" "}
+                <p
+                  className="story-action-text"
+                  onClick={() => toggleLikes(story._id)}
+                >
+                  {story.likeCount}
+                  {""} {story.likeCount === 1 ? "Like" : "Likes"}
+                </p>
               </span>
+
               <span
                 onClick={() => toggleComments(story._id)}
                 className="action-icon"
@@ -324,7 +388,10 @@ const StoryList = ({ currentUserId }) => {
                   src={chat}
                   alt="comment"
                 />{" "}
-                <p>{story.commentCount}</p>
+                <p className="story-action-text">
+                  {story.commentCount}{" "}
+                  {story.commentCount === 1 ? "Comment" : "Comments"}
+                </p>
               </span>
               <span
                 onClick={() => setShareStory(story)}
@@ -333,16 +400,16 @@ const StoryList = ({ currentUserId }) => {
                 <img
                   id="share-icon"
                   className="story-action-icon"
-                  src={chat}
+                  src={share}
                   alt="comment"
                 />
-                ↗
+                <p className="story-action-text">Share</p>
               </span>
             </div>
             {expandedStoryId === story._id && (
               <div className="comments-section">
                 <div className="comments-header">
-                  <h4>Comments</h4>
+                  <p>Comments</p>
                   <button
                     className="comments-close-btn"
                     onClick={() => setExpandedStoryId(null)}
@@ -386,13 +453,51 @@ const StoryList = ({ currentUserId }) => {
 
                 <div className="comments-input">
                   <input
+                    id="comment-input"
                     type="text"
                     placeholder="Add a comment..."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                   />
-                  <button onClick={() => handleComment(story._id)}>Post</button>
+                  <button
+                    id="comment-post-btn"
+                    onClick={() => handleComment(story._id)}
+                  >
+                    Post
+                  </button>
                 </div>
+              </div>
+            )}
+            {expandedLikeStoryId === story._id && (
+              <div className="likes-panel">
+                <p>Liked by</p>
+
+                {story.likeUsers?.length === 0 ? (
+                  <p className="no-likes-text">No likes yet.</p>
+                ) : (
+                  story.likeUsers?.map((l) => (
+                    <div key={l._id} className="like-row">
+                      <div className="like-avatar">
+                        {l.userId.profilePic ? (
+                          <img
+                            src={l.userId.profilePic}
+                            className="avatar-img"
+                          />
+                        ) : (
+                          l.userId.name.charAt(0).toUpperCase()
+                        )}
+                      </div>
+                      <span>{l.userId.name}</span>
+                    </div>
+                  ))
+                )}
+
+                <button
+                  className="close-btn"
+                  onClick={() => setExpandedLikeStoryId(null)}
+                >
+                  Close
+                </button>
               </div>
             )}
 
