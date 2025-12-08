@@ -325,7 +325,12 @@ const StoryList = ({ currentUserId }) => {
 
               {story.userId?._id === currentUserId && (
                 <button
-                  className="story-delete-btn"
+                  className={
+                    isHover ? "hovered story-delete-btn " : "story-delete-btn"
+                  }
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchCancel={handleTouchEnd}
                   onClick={() => handleDelete(story._id)}
                 >
                   Delete
@@ -419,36 +424,37 @@ const StoryList = ({ currentUserId }) => {
                 </div>
 
                 <div className="comments-list">
-                  {!story.comments ||
-                    (story.comments?.length === 0 && (
-                      <p className="no-comments">No comments yet.</p>
-                    ))}
-
-                  {story.comments?.map((c) => (
-                    <div key={c._id} className="comment-row">
-                      <div className="avatar-small">
-                        {c.userId?.profilePic ? (
-                          <img
-                            src={c.userId.profilePic}
-                            alt=""
-                            className="avatar-img"
-                          />
-                        ) : (
-                          c.userId?.name?.charAt(0).toUpperCase()
+                  {story.commentCount === 0 ? (
+                    <p className="no-comments">No comments yet.</p>
+                  ) : (
+                    story.comments?.map((c) => (
+                      <div key={c._id} className="comment-row">
+                        <div className="avatar-small">
+                          {c.userId?.profilePic ? (
+                            <img
+                              src={c.userId.profilePic}
+                              alt=""
+                              className="avatar-img"
+                            />
+                          ) : (
+                            c.userId?.name?.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <strong>{c.userId?.name}</strong>
+                        <span>{c.text}</span>
+                        {c.userId?._id === currentUserId && (
+                          <button
+                            className="delete-comment-btn"
+                            onClick={() =>
+                              handleDeleteComment(story._id, c._id)
+                            }
+                          >
+                            Remove
+                          </button>
                         )}
                       </div>
-                      <strong>{c.userId?.name}</strong>
-                      <span>{c.text}</span>
-                      {c.userId?._id === currentUserId && (
-                        <button
-                          className="delete-comment-btn"
-                          onClick={() => handleDeleteComment(story._id, c._id)}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 <div className="comments-input">
@@ -503,8 +509,12 @@ const StoryList = ({ currentUserId }) => {
 
             {/* Caption / Name Tag */}
             <div className="story-caption">
-              <strong>{story.userId?.name}</strong> posted{" "}
-              {story.mediaType === "video" ? "a video" : "an image"}
+              <strong>
+                {story.userId?._id === currentUserId
+                  ? "You"
+                  : `${story.userId?.name}`}
+              </strong>{" "}
+              posted {story.mediaType === "video" ? "a video" : "an image"}
               -story
             </div>
           </div>
