@@ -51,10 +51,12 @@
 .story-avatar {
   width: 32px;
   height: 32px;
-  background: #222;
+  background: #272727;
   border-radius: 50%;
   color: #fff;
   font-size: 16px;
+  font-weight: bold;
+  font-family: monospace;
   display: flex;
   justify-content: center;
   align-items: center;
