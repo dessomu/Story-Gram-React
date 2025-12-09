@@ -223,6 +223,8 @@ const StoryList = ({ currentUserId }) => {
 
   useEffect(() => {
     const handleCommentAdded = ({ storyId, comment }) => {
+      console.log(comment);
+
       setStories((prev) =>
         prev.map((s) =>
           s._id === storyId
@@ -236,11 +238,13 @@ const StoryList = ({ currentUserId }) => {
       );
     };
 
-    const handleLikeUpdated = ({ storyId, likeCount }) =>
+    const handleLikeUpdated = ({ storyId, likeCount }) => {
+      console.log(likeCount);
+
       setStories((prev) =>
         prev.map((s) => (s._id === storyId ? { ...s, likeCount } : s))
       );
-
+    };
     const handleCommentDeleted = ({ storyId, commentId }) =>
       setStories((prev) =>
         prev.map((s) =>
@@ -257,10 +261,13 @@ const StoryList = ({ currentUserId }) => {
     const handleStoryDeleted = (storyId) =>
       setStories((prev) => prev.filter((s) => s._id !== storyId));
 
-    const handleStoryAdded = (story) =>
+    const handleStoryAdded = (story) => {
+      console.log(story);
+
       setStories((prev) =>
         prev.some((s) => s._id === story._id) ? prev : [story, ...prev]
       );
+    };
 
     socket.on("commentAdded", handleCommentAdded);
     socket.on("likeUpdated", handleLikeUpdated);
