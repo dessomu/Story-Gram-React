@@ -84,6 +84,7 @@ const StoryList = ({ currentUserId }) => {
     const loadComments = async () => {
       try {
         const res = await API.get(`/comments/${expandedStoryId}/comments`);
+        console.log(res.data.comments);
 
         setStories((prev) =>
           prev.map((s) =>
