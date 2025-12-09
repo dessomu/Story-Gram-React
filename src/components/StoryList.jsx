@@ -20,6 +20,7 @@ const StoryList = ({ currentUserId }) => {
   const loaderRef = useRef(null);
 
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [expandedStoryId, setExpandedStoryId] = useState(null);
   const [shareStory, setShareStory] = useState(null);
 
@@ -86,13 +87,7 @@ const StoryList = ({ currentUserId }) => {
         const res = await API.get(`/comments/${expandedStoryId}/comments`);
         console.log(res.data.comments);
 
-        setStories((prev) =>
-          prev.map((s) =>
-            s._id === expandedStoryId._id
-              ? { ...s, comments: res.data.comments }
-              : s
-          )
-        );
+        setComments(res.data.comments);
       } catch (error) {
         console.error("Failed to load comments:", error);
       }
@@ -430,7 +425,7 @@ const StoryList = ({ currentUserId }) => {
                 </div>
 
                 <div className="comments-list">
-                  {!story.comments || story.comments.length === 0 ? (
+                  {comments.length === 0 ? (
                     <p className="no-comments">No comments yet.</p>
                   ) : (
                     story.comments?.map((c) => (
