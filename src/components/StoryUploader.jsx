@@ -17,9 +17,6 @@ const StoryUploader = ({ userId }) => {
     const selected = e.target.files[0];
     if (!selected) return;
 
-    console.log("File selected:", selected);
-    console.log("Type:", selected.type);
-
     setFile(selected);
     setFileType(selected.type.startsWith("video") ? "video" : "image"); // NEW
     setPreview(URL.createObjectURL(selected));
