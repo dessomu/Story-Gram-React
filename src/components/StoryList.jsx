@@ -430,7 +430,7 @@ const StoryList = ({ currentUserId }) => {
                 </div>
 
                 <div className="comments-list">
-                  {story.commentCount === 0 ? (
+                  {!story.comments || story.comments.length === 0 ? (
                     <p className="no-comments">No comments yet.</p>
                   ) : (
                     story.comments?.map((c) => (
