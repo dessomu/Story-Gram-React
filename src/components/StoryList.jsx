@@ -20,7 +20,6 @@ const StoryList = ({ currentUserId }) => {
   const loaderRef = useRef(null);
 
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
   const [expandedStoryId, setExpandedStoryId] = useState(null);
   const [shareStory, setShareStory] = useState(null);
 
@@ -87,7 +86,13 @@ const StoryList = ({ currentUserId }) => {
         const res = await API.get(`/comments/${expandedStoryId}/comments`);
         console.log(res.data.comments);
 
-        setComments(res.data.comments);
+        setStories((prev) =>
+          prev.map((s) =>
+            s._id === expandedStoryId._id
+              ? { ...s, comments: res.data.comments }
+              : s
+          )
+        );
       } catch (error) {
         console.error("Failed to load comments:", error);
       }
@@ -425,37 +430,36 @@ const StoryList = ({ currentUserId }) => {
                 </div>
 
                 <div className="comments-list">
-                  {comments.length === 0 ? (
-                    <p className="no-comments">No comments yet.</p>
-                  ) : (
-                    story.comments?.map((c) => (
-                      <div key={c._id} className="comment-row">
-                        <div className="avatar-small">
-                          {c.userId?.profilePic ? (
-                            <img
-                              src={c.userId.profilePic}
-                              alt=""
-                              className="avatar-img"
-                            />
-                          ) : (
-                            c.userId?.name?.charAt(0).toUpperCase()
-                          )}
-                        </div>
-                        <strong>{c.userId?.name}</strong>
-                        <span>{c.text}</span>
-                        {c.userId?._id === currentUserId && (
-                          <button
-                            className="delete-comment-btn"
-                            onClick={() =>
-                              handleDeleteComment(story._id, c._id)
-                            }
-                          >
-                            Remove
-                          </button>
+                  {!story.comments ||
+                    (story.comments.length === 0 && (
+                      <p className="no-comments">No comments yet.</p>
+                    ))}
+
+                  {story.comments?.map((c) => (
+                    <div key={c._id} className="comment-row">
+                      <div className="avatar-small">
+                        {c.userId?.profilePic ? (
+                          <img
+                            src={c.userId.profilePic}
+                            alt=""
+                            className="avatar-img"
+                          />
+                        ) : (
+                          c.userId?.name?.charAt(0).toUpperCase()
                         )}
                       </div>
-                    ))
-                  )}
+                      <strong>{c.userId?.name}</strong>
+                      <span>{c.text}</span>
+                      {c.userId?._id === currentUserId && (
+                        <button
+                          className="delete-comment-btn"
+                          onClick={() => handleDeleteComment(story._id, c._id)}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
 
                 <div className="comments-input">
