@@ -84,11 +84,9 @@ const StoryList = ({ currentUserId }) => {
     const loadComments = async () => {
       try {
         const res = await API.get(`/comments/${expandedStoryId}/comments`);
-        console.log(res.data.comments);
-
         setStories((prev) =>
           prev.map((s) =>
-            s._id === expandedStoryId._id
+            s._id === expandedStoryId
               ? { ...s, comments: res.data.comments }
               : s
           )
@@ -224,8 +222,6 @@ const StoryList = ({ currentUserId }) => {
 
   useEffect(() => {
     const handleCommentAdded = ({ storyId, comment }) => {
-      console.log(comment);
-
       setStories((prev) =>
         prev.map((s) =>
           s._id === storyId
@@ -240,8 +236,6 @@ const StoryList = ({ currentUserId }) => {
     };
 
     const handleLikeUpdated = ({ storyId, likeCount }) => {
-      console.log(likeCount);
-
       setStories((prev) =>
         prev.map((s) => (s._id === storyId ? { ...s, likeCount } : s))
       );
@@ -263,8 +257,6 @@ const StoryList = ({ currentUserId }) => {
       setStories((prev) => prev.filter((s) => s._id !== storyId));
 
     const handleStoryAdded = (story) => {
-      console.log(story);
-
       setStories((prev) =>
         prev.some((s) => s._id === story._id) ? prev : [story, ...prev]
       );
