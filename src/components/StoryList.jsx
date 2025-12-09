@@ -288,12 +288,10 @@ const StoryList = ({ currentUserId }) => {
   const toggleComments = (storyId) => {
     setExpandedStoryId((prev) => (prev === storyId ? null : storyId));
     setExpandedLikeStoryId(null);
-    console.log(stories);
   };
   const toggleLikes = (storyId) => {
     setExpandedLikeStoryId((prev) => (prev === storyId ? null : storyId));
     setExpandedStoryId(null);
-    console.log(stories);
   };
 
   const handleTouchStart = () => {
