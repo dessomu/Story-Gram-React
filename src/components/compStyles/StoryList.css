@@ -285,6 +285,7 @@
 /* Each comment row */
 .comment-row {
   display: flex;
+  align-items: center;
   gap: 6px;
   margin-bottom: 10px;
   font-size: 14px;
@@ -373,11 +374,12 @@
 }
 
 /* Avatar style */
-.like-avatar {
+.like-avatar,
+.avatar-small {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #6e95ba;
+  background: #b7622c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -462,7 +464,8 @@
     padding: 3px;
   }
 
-  .like-avatar {
+  .like-avatar,
+  .avatar-small {
     width: 18px;
     height: 18px;
     font-size: 12px;
