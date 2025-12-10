@@ -456,18 +456,12 @@ const StoryList = ({ currentUserId }) => {
 
                 <div className="comments-input">
                   <input
-                    id="comment-input"
                     type="text"
                     placeholder="Add a comment..."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                   />
-                  <button
-                    id="comment-post-btn"
-                    onClick={() => handleComment(story._id)}
-                  >
-                    Post
-                  </button>
+                  <button onClick={() => handleComment(story._id)}>Post</button>
                 </div>
               </div>
             )}

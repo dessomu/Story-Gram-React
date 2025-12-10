@@ -245,14 +245,6 @@
 .comments-close-btn:hover {
   color: #fff;
 }
-#comment-post-btn {
-  padding: 5px 10px;
-  background: #3897f0;
-  color: #fff;
-}
-#comment-input {
-  padding: 5px 10px;
-}
 
 /* Comment list */
 .comments-list {
@@ -316,7 +308,7 @@
 
 .comments-input input {
   flex: 1;
-  padding: 10px 12px;
+  padding: 6px 12px;
   border-radius: 10px;
   background: #1a1a1a;
   border: 1px solid #2a2a2a;
@@ -330,7 +322,7 @@
 }
 
 .comments-input button {
-  padding: 10px 14px;
+  padding: 6px 12px;
   background: #3897f0; /* IG blue */
   border: none;
   border-radius: 8px;
@@ -485,5 +477,10 @@
   }
   .story-action-text {
     font-size: small;
+  }
+  .comments-input input,
+  .comments-input button {
+    padding: 4px 8px;
+    border-radius: 6px;
   }
 }
