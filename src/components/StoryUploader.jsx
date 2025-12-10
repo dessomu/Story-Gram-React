@@ -7,22 +7,22 @@ import picUpload from "../assets/pic-upload.png";
 const StoryUploader = ({ userId }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
-  const [fileType, setFileType] = useState(""); // NEW
+  const [fileType, setFileType] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [progress, setProgress] = useState(0);
 
-  // When user selects image
+  const [showChooser, setShowChooser] = useState(false);
+
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (!selected) return;
 
     setFile(selected);
-    setFileType(selected.type.startsWith("video") ? "video" : "image"); // NEW
+    setFileType(selected.type.startsWith("video") ? "video" : "image");
     setPreview(URL.createObjectURL(selected));
   };
 
-  // Upload to backend
   const handleUpload = async () => {
     if (!file) return alert("Please select an image/video first!");
 
@@ -44,7 +44,6 @@ const StoryUploader = ({ userId }) => {
       const mediaURL = uploadRes.data.url;
       const publicId = uploadRes.data.publicId;
 
-      // Only create story—socket will update UI automatically
       await API.post("/stories", {
         userId,
         mediaURL,
@@ -55,7 +54,6 @@ const StoryUploader = ({ userId }) => {
       setProgress(100);
       setFile(null);
       setPreview("");
-      // setComment("");
     } catch (error) {
       console.error("Upload error:", error);
       alert("Upload failed");
@@ -67,7 +65,7 @@ const StoryUploader = ({ userId }) => {
   return (
     <div className="su-card">
       <div className="su-top">
-        <div className="su-input-fake">
+        <div className="su-input-fake" onClick={() => setShowChooser(true)}>
           <p>Share your story...</p>
         </div>
       </div>
@@ -124,6 +122,48 @@ const StoryUploader = ({ userId }) => {
         >
           {loading ? "Uploading..." : "Upload Story"}
         </button>
+      )}
+      {showChooser && (
+        <div className="story-type-overlay">
+          <div className="story-type-modal">
+            <h3>Create a story</h3>
+
+            <div className="story-type-options">
+              <label className="story-type-btn">
+                📷 Photo Story
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => {
+                    handleFileChange(e);
+                    setShowChooser(false);
+                  }}
+                />
+              </label>
+
+              <label className="story-type-btn">
+                🎥 Video Story
+                <input
+                  type="file"
+                  accept="video/*"
+                  hidden
+                  onChange={(e) => {
+                    handleFileChange(e);
+                    setShowChooser(false);
+                  }}
+                />
+              </label>
+            </div>
+
+            <button
+              className="story-type-cancel"
+              onClick={() => setShowChooser(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
