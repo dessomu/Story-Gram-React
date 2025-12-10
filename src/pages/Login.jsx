@@ -15,7 +15,6 @@ export default function Login() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
 
-    // ✅ Unlock login button when user changes input
     if (isBlocked) {
       setIsBlocked(false);
       setError("");
@@ -38,7 +37,6 @@ export default function Login() {
       const message = err.response?.data?.message || "Login failed";
       setError(message);
 
-      // ✅ Block button only for auth-related errors
       if (message === "User not found" || message === "Invalid password") {
         setIsBlocked(true);
       }

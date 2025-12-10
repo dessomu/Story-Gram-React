@@ -18,7 +18,6 @@ export default function Signup() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
 
-    // ✅ unlock when user edits input
     if (isBlocked) {
       setIsBlocked(false);
       setError("");
@@ -41,7 +40,6 @@ export default function Signup() {
       const message = err.response?.data?.message || "Signup failed";
       setError(message);
 
-      // ✅ block only for email conflict
       if (message === "Email already exists") {
         setIsBlocked(true);
       }
