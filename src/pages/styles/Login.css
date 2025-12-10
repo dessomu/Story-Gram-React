@@ -92,6 +92,13 @@
 .login-redirect:hover span {
   text-decoration: underline;
 }
+.error-text {
+  text-align: center;
+  color: var(--muted);
+  font-weight: 300;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
 
 /* Animations */
 @keyframes fadeIn {
@@ -132,6 +139,9 @@
   .login-title {
     font-size: 22px;
   }
+  .error-text {
+    font-size: small;
+  }
 }
 
 /* 480px and below */
@@ -169,5 +179,8 @@
 
   .login-redirect {
     font-size: 13px;
+  }
+  .error-text {
+    font-size: smaller;
   }
 }

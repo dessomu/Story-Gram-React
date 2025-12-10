@@ -8,13 +8,45 @@ export default function Signup() {
 
   const [form, setForm] = useState({ name: "", email: "", password: "" });
 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+
+  const isFormInvalid =
+    !form.name.trim() || !form.email.trim() || !form.password.trim();
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+    // ✅ unlock when user edits input
+    if (isBlocked) {
+      setIsBlocked(false);
+      setError("");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isFormInvalid || isBlocked) return;
+
     try {
+      setLoading(true);
+      setError("");
+
       await API.post("/auth/signup", form);
+
       navigate("/login");
     } catch (err) {
-      alert(err.response?.data?.message || "Signup failed");
+      const message = err.response?.data?.message || "Signup failed";
+      setError(message);
+
+      // ✅ block only for email conflict
+      if (message === "Email already exists") {
+        setIsBlocked(true);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,30 +58,43 @@ export default function Signup() {
         <form onSubmit={handleSubmit} className="signup-form">
           <input
             type="text"
+            name="name"
             placeholder="Name"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={handleChange}
           />
 
           <input
             type="email"
+            name="email"
             placeholder="Email"
             value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={handleChange}
           />
 
           <input
             type="password"
+            name="password"
             placeholder="Password"
             value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            onChange={handleChange}
           />
 
-          <button type="submit" className="signup-btn">
-            Sign Up
+          <button
+            type="submit"
+            className="signup-btn"
+            disabled={loading || isBlocked || isFormInvalid}
+            style={{
+              cursor:
+                loading || isBlocked || isFormInvalid
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            {loading ? "Signing up..." : "Signup"}
           </button>
         </form>
-
+        {error && <p className="signup error-text">{error}</p>}
         <p className="signup-redirect" onClick={() => navigate("/login")}>
           Already have an account? <span>Login</span>
         </p>
