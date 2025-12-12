@@ -19,6 +19,8 @@ const StoryList = ({ currentUserId }) => {
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef(null);
 
+  const [storyToDelete, setStoryToDelete] = useState(null);
+
   const [comment, setComment] = useState("");
   const [expandedStoryId, setExpandedStoryId] = useState(null);
   const [shareStory, setShareStory] = useState(null);
@@ -186,6 +188,8 @@ const StoryList = ({ currentUserId }) => {
       setStories((prev) => prev.filter((story) => story._id !== storyId));
     } catch (err) {
       console.error("Failed to delete story:", err);
+    } finally {
+      setStoryToDelete(null); // Close modal
     }
   };
 
@@ -329,7 +333,7 @@ const StoryList = ({ currentUserId }) => {
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
                   onTouchCancel={handleTouchEnd}
-                  onClick={() => handleDelete(story._id)}
+                  onClick={() => setStoryToDelete(story._id)}
                 >
                   Delete
                 </button>
@@ -521,6 +525,30 @@ const StoryList = ({ currentUserId }) => {
       {hasMore && (
         <div ref={loaderRef} className="storylist-loader">
           <p>Loading more stories...</p>
+        </div>
+      )}
+      {storyToDelete && (
+        <div className="delete-modal-overlay">
+          <div className="delete-modal">
+            <h3>Delete Story?</h3>
+            <p>This action cannot be undone.</p>
+
+            <div className="delete-modal-actions">
+              <button
+                className="delete-confirm-btn"
+                onClick={() => handleDelete(storyToDelete)}
+              >
+                Delete
+              </button>
+
+              <button
+                className="delete-cancel-btn"
+                onClick={() => setStoryToDelete(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
