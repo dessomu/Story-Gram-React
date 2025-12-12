@@ -378,6 +378,11 @@
   border-radius: 12px;
 }
 
+.no-likes-text {
+  color: #999 !important;
+  font-family: sans-serif;
+}
+
 /* Avatar style */
 .like-avatar,
 .avatar-small {
