@@ -251,6 +251,7 @@
   overflow-y: auto;
   padding-right: 4px;
   margin-bottom: 14px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .delete-comment-btn {
   background: none;
@@ -276,9 +277,8 @@
 /* Each comment row */
 .comment-row {
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 6px;
-  margin-bottom: 10px;
   font-size: 14px;
   color: #ddd;
 }
@@ -286,6 +286,20 @@
 .comment-row strong {
   color: #fff;
   font-size: 14px;
+}
+.comment-row span {
+  word-wrap: break-word;
+}
+.comment-text {
+  margin-left: 10px;
+  font-size: small;
+  font-weight: 200;
+  color: #ccc;
+}
+.comment-time-ago {
+  color: #8c8c8c;
+  margin: 4px 0 8px 28px;
+  font-size: small;
 }
 
 /* Scrollbar styling */
@@ -377,6 +391,7 @@
   font-weight: 700;
   color: #fff;
   font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
 /* Close button */
@@ -558,6 +573,14 @@
   }
   .story-action-text {
     font-size: small;
+  }
+  .comment-text {
+    margin-left: 7px;
+    font-size: 12px;
+  }
+  .comment-time-ago {
+    margin: 3.5px 0 5px 24px;
+    font-size: 12px;
   }
   .comments-input input,
   .comments-input button {

@@ -9,7 +9,8 @@ import unmute from "../assets/unmute.png";
 import like from "../assets/like.png";
 import chat from "../assets/bubble-chat.png";
 import share from "../assets/share.png";
-import formatDateTime from "../lib/formatDateTime";
+import formatDateTime from "../util/formatDateTime";
+import timeAgo from "../util/timeAgo";
 
 const StoryList = ({ currentUserId }) => {
   // const [stories, setStories] = useState([]);
@@ -432,29 +433,37 @@ const StoryList = ({ currentUserId }) => {
                     ))}
 
                   {story.comments?.map((c) => (
-                    <div key={c._id} className="comment-row">
-                      <div className="avatar-small">
-                        {c.userId?.profilePic ? (
-                          <img
-                            src={c.userId.profilePic}
-                            alt=""
-                            className="avatar-img"
-                          />
-                        ) : (
-                          c.userId?.name?.charAt(0).toUpperCase()
-                        )}
+                    <>
+                      <div key={c._id} className="comment-row">
+                        <div className="avatar-small">
+                          {c.userId?.profilePic ? (
+                            <img
+                              src={c.userId.profilePic}
+                              alt=""
+                              className="avatar-img"
+                            />
+                          ) : (
+                            c.userId?.name?.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <strong>
+                          {c.userId?.name}
+
+                          <span className="comment-text">{c.text}</span>
+                        </strong>
+                        {c.userId?._id === currentUserId && (
+                          <button
+                            className="delete-comment-btn"
+                            onClick={() =>
+                              handleDeleteComment(story._id, c._id)
+                            }
+                          >
+                            Remove
+                          </button>
+                        )}{" "}
                       </div>
-                      <strong>{c.userId?.name}</strong>
-                      <span>{c.text}</span>
-                      {c.userId?._id === currentUserId && (
-                        <button
-                          className="delete-comment-btn"
-                          onClick={() => handleDeleteComment(story._id, c._id)}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
+                      <p className="comment-time-ago">{timeAgo(c.createdAt)}</p>
+                    </>
                   ))}
                 </div>
 
