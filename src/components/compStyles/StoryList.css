@@ -277,7 +277,7 @@
 /* Each comment row */
 .comment-row {
   display: flex;
-  align-items: start;
+  align-items: center;
   gap: 6px;
   font-size: 14px;
   color: #ddd;
