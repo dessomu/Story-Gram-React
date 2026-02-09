@@ -533,7 +533,7 @@ const StoryList = ({ currentUserId }) => {
 
       {hasMore && (
         <div ref={loaderRef} className="storylist-loader">
-          <p>Loading more stories...</p>
+          <p>Loading stories...</p>
         </div>
       )}
       {storyToDelete && (
